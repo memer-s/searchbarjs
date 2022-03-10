@@ -56,14 +56,12 @@ function showSearch(id) {
    document.getElementsByClassName("cover")[0].style = "display: block;";
    let sel = document.getElementById("sinput")
    sel.focus()
-   renderResults(results, selected)
    if (hidden === true) {
       hidden = false;
       sel.value = ""
+      renderResults(displaydata, selected)
    }
 }
-
-let results;
 
 function initSearchBar(resultArray, configObj, callback) {
    config = configObj
@@ -78,7 +76,7 @@ function initSearchBar(resultArray, configObj, callback) {
       ]
    });
 
-   results = resultArray;
+   displaydata = resultArray;
 
    let cover = c("section", {class: "cover"})
 
@@ -90,7 +88,7 @@ function initSearchBar(resultArray, configObj, callback) {
    document.body.append(cover)
 
    let sinput = document.getElementById("sinput")
-   sinput.addEventListener("input", (event) => {
+   sinput.addEventListener("input", () => {
       displaydata = []
       for (let i = 0; i < resultArray.length; i++) {
          if (config.secondSearchKey) {
@@ -123,6 +121,7 @@ function initSearchBar(resultArray, configObj, callback) {
          hideSearch("search")
       }
       if (event.ctrlKey && event.key === 'j') {
+         console.log("BRUH")
          selectDown();
          event.preventDefault()
       }
