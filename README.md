@@ -4,8 +4,8 @@ Here you can see a minimal setup
 
 ```javascript
 const data = [
-{name: "result 1", path: "http://localhost:2000", description: 'descriptionbruh', blablabla: 'asdfasd'},
-{name: "result 2", path: "http://localhost:3000/bruh", description: 'descriptionbruh', blablabla: 'asdfd'},
+   {name: "result 1", path: "http://localhost:2000", description: 'descriptionbruh', blablabla: 'asdfasd'},
+   {name: "result 2", path: "http://localhost:3000/bruh", description: 'descriptionbruh', blablabla: 'asdfd'},
 ]
 
 const config = {
