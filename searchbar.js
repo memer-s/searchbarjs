@@ -190,8 +190,8 @@ function renderResults(data, selection) {
          els.push(c("a", {
             href: data[i][config.href], class: "resultlink", elements: [c("div", {
                elements: [
-                  c("h2", {text: data[i].title}),
-                  c("p", {text: data[i].desc})
+                  c("h2", {text: data[i][config.titleKey]}),
+                  c("p", {text: data[i][config.descKey]})
                ], class: "result", id: "selected"
             })]
          }))
@@ -200,8 +200,8 @@ function renderResults(data, selection) {
          els.push(c("a", {
             href: data[i][config.href], class: "resultlink", elements: [c("div", {
                elements: [
-                  c("h2", {text: data[i].title}),
-                  c("p", {text: data[i].desc})
+                  c("h2", {text: data[i][config.titleKey]}),
+                  c("p", {text: data[i][config.descKey]})
                ], class: "result"
             })]
          }))
