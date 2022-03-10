@@ -56,11 +56,14 @@ function showSearch(id) {
    document.getElementsByClassName("cover")[0].style = "display: block;";
    let sel = document.getElementById("sinput")
    sel.focus()
+   renderResults(results, selected)
    if (hidden === true) {
       hidden = false;
       sel.value = ""
    }
 }
+
+let results;
 
 function initSearchBar(resultArray, configObj, callback) {
    config = configObj
@@ -74,6 +77,8 @@ function initSearchBar(resultArray, configObj, callback) {
          })
       ]
    });
+
+   results = resultArray;
 
    let cover = c("section", {class: "cover"})
 
@@ -143,7 +148,7 @@ function initSearchBar(resultArray, configObj, callback) {
 }
 
 function selectDown() {
-   if(config.maxResults !== undefined) {
+   if (config.maxResults !== undefined) {
       if (selected < config.maxResults - 1) {
          selected++
          renderResults(displaydata, selected)
@@ -169,8 +174,8 @@ function renderResults(data, selection) {
 
    let iterations;
 
-   if(config.maxResults !== undefined) {
-      if(config.maxResults >= data.length) {
+   if (config.maxResults !== undefined) {
+      if (config.maxResults >= data.length) {
          iterations = data.length;
       }
       else {
