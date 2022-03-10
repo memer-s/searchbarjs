@@ -1,4 +1,3 @@
-
 // shoutouts to bevacqua, jayrhynas and hustcc for their amazing fuzzysearch.
 function fuzzysearch(needle, haystack) {
    var hlen = haystack.length;
@@ -86,7 +85,7 @@ function initSearchBar(resultArray, configObj, callback) {
    document.body.append(cover)
 
    let sinput = document.getElementById("sinput")
-   sinput.addEventListener("selectionchange", (event) => {
+   sinput.addEventListener("input", (event) => {
       displaydata = []
       for (let i = 0; i < resultArray.length; i++) {
          if (config.secondSearchKey) {
@@ -144,9 +143,17 @@ function initSearchBar(resultArray, configObj, callback) {
 }
 
 function selectDown() {
-   if (selected < displaydata.length - 1) {
-      selected++
-      renderResults(displaydata, selected)
+   if(config.maxResults !== undefined) {
+      if (selected < config.maxResults - 1) {
+         selected++
+         renderResults(displaydata, selected)
+      }
+   }
+   else {
+      if (selected < displaydata.length - 1) {
+         selected++
+         renderResults(displaydata, selected)
+      }
    }
 }
 function selectUp() {
@@ -159,7 +166,22 @@ function selectUp() {
 function renderResults(data, selection) {
    let els = []
    document.getElementById("results").innerHTML = ""
-   for (let i = 0; i < data.length; i++) {
+
+   let iterations;
+
+   if(config.maxResults !== undefined) {
+      if(config.maxResults >= data.length) {
+         iterations = data.length;
+      }
+      else {
+         iterations = config.maxResults;
+      }
+   }
+   else {
+      iterations = data.length
+   }
+
+   for (let i = 0; i < iterations; i++) {
       if (selection === i) {
          els.push(c("a", {
             href: data[i][config.href], class: "resultlink", elements: [c("div", {
