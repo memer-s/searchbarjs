@@ -45,14 +45,17 @@ let displaydata = []
 let selected = 0;
 let config;
 
-function hideSearch(id) {
-   document.getElementById(id).style = "display: none;";
+let searchBar;
+let cover;
+
+function hideSearch(str) {
+   document.getElementById("search").style = "display: none;";
    document.getElementsByClassName("cover")[0].style = "display: none;";
    hidden = true;
 }
 
-function showSearch(id) {
-   document.getElementById(id).style = "display: block;";
+function showSearch(str) {
+   document.getElementById("search").style = "display: block;";
    document.getElementsByClassName("cover")[0].style = "display: block;";
    let sel = document.getElementById("sinput")
    sel.focus()
@@ -63,13 +66,24 @@ function showSearch(id) {
    }
 }
 
+let keydowneventlist;
+
+let searchbarCallback;
+
+function kill() {
+   cover.remove()
+   searchBar.remove()
+   document.removeEventListener("keydown", keydowneventlist)
+}
+
 function initSearchBar(resultArray, configObj, callback) {
+   searchbarCallback = callback;
    config = configObj
-   let searchBar = c("section", {
+   searchBar = c("section", {
       text: undefined, class: "searchbar", id: "search", elements: [
          c("div", {
             class: "searchdiv", elements: [
-               c("input", {id: "sinput", placeholder: "Search " + config.name}),
+               c("input", {id: "sinput", placeholder: config.name}),
                c("div", {id: "results"})
             ]
          })
@@ -78,7 +92,7 @@ function initSearchBar(resultArray, configObj, callback) {
 
    displaydata = resultArray;
 
-   let cover = c("section", {class: "cover"})
+   cover = c("section", {class: "cover"})
 
    cover.addEventListener("click", () => {
       hideSearch("search")
@@ -115,40 +129,64 @@ function initSearchBar(resultArray, configObj, callback) {
       selected = 0;
       renderResults(displaydata, selected)
    })
-
-   document.addEventListener("keydown", (event) => {
+   hideSearch("search")
+   function keydowneventlist(event) {
       if (event.ctrlKey && event.key === 'c') {
          hideSearch("search")
       }
       if (event.ctrlKey && event.key === 'j') {
-         console.log("BRUH")
          selectDown();
          event.preventDefault()
       }
       if (event.ctrlKey && event.key === 'k') {
          selectUp()
-         showSearch("search")
+         showSearch()
+         event.preventDefault()
+      }
+
+      if (event.code == "ArrowDown") {
+         selectDown();
+         event.preventDefault()
+      }
+      if (event.code == "ArrowUp") {
+         selectUp()
+         showSearch()
          event.preventDefault()
       }
 
       if (event.key === 'Escape') {
-         hideSearch("search")
+         hideSearch()
          event.preventDefault()
       }
       if (!hidden) {
          if (event.key === 'Enter') {
             callback(displaydata[selected])
+            //searchBar.remove()
+            //cover.remove()
             event.preventDefault()
          }
       }
-   })
+   }
+
+
+   document.addEventListener("keydown", keydowneventlist)
 
    hideSearch("search")
+   let url = window.location.pathname;
+   //let bloatId = setInterval(() => {
+   //if (url !== window.location.pathname) {
+   //kill()
+   //console.log("I AM BLOATWARE (aka killed the searchbar)")
+   //clearInterval(bloatId)
+   //}
+   //}, 2000)
+   return {hide: hideSearch, show: showSearch, destroy: kill}
 }
+
 
 function selectDown() {
    if (config.maxResults !== undefined) {
-      if (selected < config.maxResults - 1) {
+      if (selected < config.maxResults - 1 && selected < displaydata.length - 1) {
          selected++
          renderResults(displaydata, selected)
       }
@@ -186,26 +224,57 @@ function renderResults(data, selection) {
    }
 
    for (let i = 0; i < iterations; i++) {
-      if (selection === i) {
-         els.push(c("a", {
-            href: data[i][config.href], class: "resultlink", elements: [c("div", {
-               elements: [
-                  c("h2", {text: data[i][config.titleKey]}),
-                  c("p", {text: data[i][config.descKey]})
-               ], class: "result", id: "selected"
-            })]
-         }))
+
+      // USE SHORTHAND INSTEAD BRUH
+      if (config.href != undefined) {
+         if (selection === i) {
+            els.push(c("a", {
+               href: data[i][config.href], class: "resultlink", elements: [c("div", {
+                  elements: [
+                     c("h2", {text: data[i][config.title]}),
+                     c("p", {text: data[i][config.description]})
+                  ], class: "result", id: "selected"
+               })]
+            }))
+         }
+         else {
+            els.push(c("a", {
+               href: data[i][config.href], class: "resultlink", elements: [c("div", {
+                  elements: [
+                     c("h2", {text: data[i][config.title]}),
+                     c("p", {text: data[i][config.description]})
+                  ], class: "result"
+               })]
+            }))
+         }
       }
       else {
-         els.push(c("a", {
-            href: data[i][config.href], class: "resultlink", elements: [c("div", {
-               elements: [
-                  c("h2", {text: data[i][config.titleKey]}),
-                  c("p", {text: data[i][config.descKey]})
-               ], class: "result"
-            })]
-         }))
+         if (selection === i) {
+            els.push(c("a", {
+               class: "resultlink", elements: [c("div", {
+                  elements: [
+                     c("h2", {text: data[i][config.title]}),
+                     c("p", {text: data[i][config.description]})
+                  ], class: "result", id: "selected"
+               })]
+            }))
+         }
+         else {
+            els.push(c("a", {
+               class: "resultlink", elements: [c("div", {
+                  elements: [
+                     c("h2", {text: data[i][config.title]}),
+                     c("p", {text: data[i][config.description]})
+                  ], class: "result"
+               })]
+            }))
+         }
       }
+
+      els[i].addEventListener("click", () => {
+         searchbarCallback(data[i])
+         //kill()
+      })
    }
    let el = c("div", {elements: els})
    document.getElementById("results").append(el)

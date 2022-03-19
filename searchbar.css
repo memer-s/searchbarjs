@@ -8,6 +8,7 @@
 }
 
 .cover {
+   transition: all 1s ease;
    position: fixed;
    top: 0;
    left: 0;
@@ -26,7 +27,9 @@
 .searchbar {
    z-index: 60;
    max-width: 800px;
-   min-width: 100px;
+   max-width: 90vw;
+   width: 600px;
+   min-width: 300px;
    background-color: #f1f1f1;
    padding: 10px;
    border-radius: 8px;
@@ -47,6 +50,7 @@
 }
 
 .result {
+   cursor: pointer;
    margin-top: 10px;
    padding: 10px;
    background-color: #E9E9E9;
@@ -59,13 +63,14 @@
 }
 
 .result h2 {
-   font-family: Montserrat;
+   font-family: Poppins;
    font-size: 20px;
    text-decoration: none;
    margin: 0;
 }
 
 .result p {
+   font-family: Poppins;
    font-size: 16px;
    color: #888888;
    text-decoration: none;
