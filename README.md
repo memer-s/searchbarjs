@@ -1,6 +1,6 @@
 # Searchbar.js
 
-Here you can see a minimal setup
+Here you can see a minimal setup (OUTDATED)
 
 ```javascript
 const data = [
